@@ -7,18 +7,18 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   template: `
     <div class="auth-form">
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        
+
         <ng-content select="h1"></ng-content>
 
         <label>
-          <input 
-            type="email" 
+          <input
+            type="email"
             placeholder="Email address"
             formControlName="email">
         </label>
         <label>
-          <input 
-            type="password" 
+          <input
+            type="password"
             placeholder="Enter password"
             formControlName="password">
         </label>
