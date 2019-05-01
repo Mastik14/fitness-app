@@ -19,10 +19,10 @@ export interface Meal {
 @Injectable()
 export class MealsService {
 
-  meals$: Observable<Meal[]> = this.db.list(`meals/${this.uid}`)
-    .tap(next => this.store.set('meals', next));
-
-  // meals$: Observable<any> = this.db.list(`meals/${this.uid}`).tap(next => this.store.set('meals', next));
+  meals$: Observable<Meal[]> = this.db.list<Meal>(`meals/${this.uid}`).valueChanges()
+    .pipe(
+        tap(result => this.store.set('meals', result))
+    );
 
   constructor(
     private store: Store,
