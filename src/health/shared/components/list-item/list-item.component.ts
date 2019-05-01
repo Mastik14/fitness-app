@@ -35,7 +35,7 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from 
         class="trash"
         type="button"
         (click)="toggle()">
-        <img src="/img/remove.svg">
+        <img src="../../../../assets/img/remove.svg">
       </button>
     </div>
   `

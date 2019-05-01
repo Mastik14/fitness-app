@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs';
 
 import { Meal, MealsService } from '../../../shared/services/meals/meals.service';
-
 @Component({
   selector: 'meals',
   styleUrls: ['meals.component.scss'],
@@ -15,6 +14,7 @@ import { Meal, MealsService } from '../../../shared/services/meals/meals.service
       <div class="meals__title">
         <h1>
           <img src="../../../../assets/img/food.svg">
+          Your meals
         </h1>
         <a
           class="btn__add"
@@ -28,7 +28,11 @@ import { Meal, MealsService } from '../../../shared/services/meals/meals.service
           <img src="../../../../assets/img/face.svg">
           No meals, add a new meal to start
         </div>
-        <!-- meals ngFor -->
+        <list-item
+          *ngFor="let meal of meals"
+          [item]="meal"
+          (remove)="removeMeal($event)">
+        </list-item>
       </div>
       <ng-template #loading>
         <div class="message">
@@ -39,6 +43,7 @@ import { Meal, MealsService } from '../../../shared/services/meals/meals.service
     </div>
   `
 })
+
 export class MealsComponent implements OnInit, OnDestroy {
 
   meals$: Observable<Meal[]>;
