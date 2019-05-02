@@ -19,9 +19,17 @@ export interface Meal {
 @Injectable()
 export class MealsService {
 
-  meals$: Observable<Meal[]> = this.db.list<Meal>(`meals/${this.uid}`).valueChanges()
+  // meals$: Observable<Meal[]> = this.db.list<Meal>(`meals/${this.uid}`).valueChanges()
+  //   .pipe(
+  //       tap(result => this.store.set('meals', result))
+  //   );
+
+  meals$: Observable<Meal[]> = this.db.list<Meal>(`meals/${this.uid}`).snapshotChanges()
     .pipe(
-        tap(result => this.store.set('meals', result))
+        map(meals =>
+            meals.map(meal => ({ $key: meal.key, ...meal.payload.val() }))
+        ),
+        tap(meals => this.store.set('meals', meals))
     );
 
   constructor(
@@ -37,6 +45,7 @@ export class MealsService {
 
   getMeal(key: string) {
     if (!key) {
+      console.log('!key value');
       return of({});
     }
 
@@ -46,6 +55,10 @@ export class MealsService {
 
   addMeal(meal: Meal) {
     return this.db.list(`meals/${this.uid}`).push(meal);
+  }
+
+  updateMeal(key: string, meal: Meal) {
+    return this.db.object(`meals/${this.uid}/${key}`).update(meal);
   }
 
   removeMeal(key: string) {
