@@ -3,8 +3,8 @@ import { AngularFireDatabase } from 'angularfire2/database';
 
 import { Store } from '../../../../store';
 
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { tap, filter, map } from 'rxjs/operators';
 
 import { AuthService } from '../../../../auth/shared/services/auth/auth.service';
 
@@ -33,6 +33,15 @@ export class MealsService {
   get uid() {
     console.log(this.authService.user.uid);
     return this.authService.user.uid;
+  }
+
+  getMeal(key: string) {
+    if (!key) {
+      return of({});
+    }
+
+    return this.store.select<Meal[]>('meals')
+      .pipe(filter(Boolean), map(meals => meals.find((meal: Meal) => meal.$key === key)));
   }
 
   addMeal(meal: Meal) {
