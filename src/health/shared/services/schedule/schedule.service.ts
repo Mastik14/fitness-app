@@ -53,7 +53,8 @@ export class ScheduleService {
         return { startAt, endAt };
 
       }),
-      switchMap(({ startAt, endAt }: any) => this.getSchedule(startAt, endAt)),  map((data: any) => {
+      switchMap(({ startAt, endAt }: any) => this.getSchedule(startAt, endAt)),
+      map((data: any) => {
 
         const mapped: ScheduleList = {};
 
