@@ -21,17 +21,12 @@ export interface Workout {
 @Injectable()
 export class WorkoutsService {
 
-  // workouts$: Observable<Workout[]> = this.db.list(`workouts/${this.uid}`).snapshotChanges()
-  //   .pipe(
-  //     map(workouts =>
-  //       workouts.map(workout => ({ $key: workout.key, ...workout.payload.val() }))
-  //     ),
-  //     tap(workouts => this.store.set('workouts', workouts))
-  // );
-
-  workouts$: Observable<Workout[]> = this.db.list<Workout>(`workouts/${this.uid}`).valueChanges()
+  workouts$: Observable<Workout[]> = this.db.list<Workout>(`workouts/${this.uid}`).snapshotChanges()
     .pipe(
-      tap(result => this.store.set('workouts', result))
+        map(workouts =>
+          workouts.map(workout => ({ $key: workout.key, ...workout.payload.val() }))
+        ),
+        tap(workouts => this.store.set('workouts', workouts))
     );
 
   constructor(
