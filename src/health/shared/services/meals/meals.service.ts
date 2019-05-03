@@ -19,17 +19,25 @@ export interface Meal {
 @Injectable()
 export class MealsService {
 
-  // meals$: Observable<Meal[]> = this.db.list<Meal>(`meals/${this.uid}`).valueChanges()
+  // meals$: Observable<Meal[]> = this.db.list<Meal>(`meals/${this.uid}`).snapshotChanges()
   //   .pipe(
-  //       tap(result => this.store.set('meals', result))
+  //       map(meals =>
+  //           meals.map(meal => ({ $key: meal.key, ...meal.payload.val() }))
+  //       ),
+  //       tap(meals => this.store.set('meals', meals))
   //   );
 
-  meals$: Observable<Meal[]> = this.db.list<Meal>(`meals/${this.uid}`).snapshotChanges()
+  meals$: Observable<any> = this.db.list<Meal[]>(`meals/${this.uid}`)
+    .snapshotChanges()
     .pipe(
-        map(meals =>
-            meals.map(meal => ({ $key: meal.key, ...meal.payload.val() }))
-        ),
-        tap(meals => this.store.set('meals', meals))
+      map(actions => {
+        return actions.map(action => {
+          const data = action.payload.val();
+          const $key = action.payload.key;
+          return { $key, ...data };
+        });
+      }),
+      tap(next => this.store.set('meals', next))
     );
 
   constructor(
@@ -39,13 +47,11 @@ export class MealsService {
   ) {}
 
   get uid() {
-    console.log(this.authService.user.uid);
     return this.authService.user.uid;
   }
 
   getMeal(key: string) {
     if (!key) {
-      console.log('!key value');
       return of({});
     }
 

@@ -90,7 +90,7 @@ export class ScheduleService {
         return { startAt, endAt };
 
       }),
-      // switchMap(({ startAt, endAt }: any) => this.getSchedule(startAt, endAt)),
+      switchMap(({ startAt, endAt }: any) => this.getSchedule(startAt, endAt)),
       map((data: any) => {
 
         const mapped: ScheduleList = {};
@@ -136,14 +136,18 @@ export class ScheduleService {
       return this.db.object(`schedule/${this.uid}/${key}`).update(payload);
     }
 
-    // private getSchedule(startAt: number, endAt: number) {
-    //   return this.db.list(`schedule/${this.uid}`, {
-    //     query: {
-    //       orderByChild: 'timestamp',
-    //       startAt,
-    //       endAt
-    //     }
-    //   });
-    // }
-
+  private getSchedule(startAt: number, endAt: number) {
+    // return this.db.list(`schedule/${this.uid}`, {
+    //   query: {
+    //     orderByChild: 'timestamp',
+    //     startAt,
+    //     endAt
+    //   }
+    // });
+    return this.db.list(`schedule/${this.uid}`,
+      ref => ref.orderByChild('timestamp')
+        .startAt(startAt)
+        .endAt(endAt)).valueChanges();
   }
+
+}
